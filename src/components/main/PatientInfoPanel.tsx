@@ -3,7 +3,23 @@
 import React from 'react';
 import { Info, Upload, Move3D, Activity } from 'lucide-react';
 
-const PatientInfoPanel = ({ 
+interface PatientData {
+  id?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  surgicalInfo?: string;
+  diagnosticResult?: string;
+}
+
+interface PatientInfoPanelProps {
+  patientData?: PatientData;
+  onUpload: () => void;
+  on3DConversion: () => void;
+  onAnalyze: () => void;
+  hasFile?: boolean;
+}
+
+const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({ 
   patientData = {},
   onUpload,
   on3DConversion,

@@ -17,6 +17,9 @@ importers:
       next:
         specifier: 15.3.2
         version: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      nifti-reader-js:
+        specifier: ^0.8.0
+        version: 0.8.0
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -1493,6 +1496,9 @@ packages:
         optional: true
       sass:
         optional: true
+
+  nifti-reader-js@0.8.0:
+    resolution: {integrity: sha512-iO1iIhQDfKniy+l/86HfOPte7So+SxBmBiMSiUB2VXU7z4hSewMTlE3h0fCgfzfXvMUa+ilzLTJ2ZHmtFw6EWw==}
 
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
@@ -3431,6 +3437,10 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+
+  nifti-reader-js@0.8.0:
+    dependencies:
+      fflate: 0.8.2
 
   object-assign@4.1.1: {}
 

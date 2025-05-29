@@ -70,6 +70,7 @@ const MainLayout = () => {
     if (currentView === '2d') {
       return (
         <BrainViewer2D
+          niiFile={uploadedFile}
           currentPlane={currentPlane}
           onPlaneChange={setCurrentPlane}
           selectedSlice={selectedSlice}
