@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import main_logo from '../../../public/images/main_logo.png';
 import { Settings, Info } from 'lucide-react';
 
 const Header = () => {
@@ -11,10 +10,10 @@ const Header = () => {
             className="flex items-center justify-between p-6 border-b border-gray-700"
             style={{ background: '#2C2A42' }}
         >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
                 <div className="relative w-[200px] h-[40px]">
                     <Image
-                        src={main_logo}
+                        src={"/images/main_logo.png"}
                         alt="main logo"
                         fill
                         className="object-contain"

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef } from 'react';
-import { Upload } from 'lucide-react';
+import Image from 'next/image';
+import logo from '../../../public/images/logo.png';
 
 const FileUpload = ({ onFileUpload, isLoading = false }) => {
   const fileInputRef = useRef(null);
@@ -30,28 +31,19 @@ const FileUpload = ({ onFileUpload, isLoading = false }) => {
     );
   }
 
-  return (
+return (
     <div className="h-full flex items-center justify-center">
-      <div className="text-center">
-        <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-        <h3 className="text-xl font-semibold mb-2">Upload NII File</h3>
-        <p className="text-gray-400 mb-4">Upload a .nii file to view medical imaging data</p>
-        <button 
-          onClick={handleClick}
-          className="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-lg transition-colors"
-        >
-          Choose File
-        </button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".nii"
-          onChange={handleFileSelect}
-          className="hidden"
-        />
-      </div>
+        <div className="relative w-480 h-48 flex items-center justify-center">
+            <Image
+                src={logo}
+                alt="main logo"
+                fill
+                className="object-contain"
+                priority
+            />
+        </div>
     </div>
-  );
+);
 };
 
 export default FileUpload;
