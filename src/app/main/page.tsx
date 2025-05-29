@@ -1,24 +1,134 @@
 'use client'
 
-import React from 'react'
-import { Canvas, useLoader } from '@react-three/fiber'
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js'
+import React, { useState, useRef } from 'react';
+import Header from '../../components/main/Header';
+import Sidebar from '../../components/main/Sidebar';
+import FileUpload from '../../components/main/FileUpload';
+import BrainViewer2D from '../../components/main/BrainViewer2D';
+import BrainViewer3D from '../../components/main/BrainViewer3D';
+import PatientInfoPanel from '../../components/main/PatientInfoPanel';
 
-const modelPath = '/images/tumor_0.glb'
+const MainLayout = () => {
+  const [currentView, setCurrentView] = useState('2d');
+  const [selectedSlice, setSelectedSlice] = useState(0);
+  const [currentPlane, setCurrentPlane] = useState('axial');
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('activity');
+  const [patientData, setPatientData] = useState({});
+  const fileInputRef = useRef(null);
+  
+  const sliceCount = 155;
 
-function Model({ url }: { url: string }) {
-  const gltf = useLoader(GLTFLoader, url)
-  return <primitive object={gltf.scene} scale={0.5} dispose={null} />
-}
+  const handleFileUpload = (file) => {
+    setIsLoading(true);
+    setUploadedFile(file);
+    
+    // Simulate file processing
+    setTimeout(() => {
+      setIsLoading(false);
+      // You can set patient data here after processing the file
+      setPatientData({
+        id: 'P001',
+        gender: 'Unknown',
+        dateOfBirth: 'Unknown'
+      });
+    }, 2000);
+  };
 
-export default function GLBViewer() {
+  const handle3DConversion = () => {
+    setCurrentView('3d');
+  };
+
+  const handleAnalyze = () => {
+    alert('Analysis functionality would be implemented here');
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const renderViewer = () => {
+    if (!uploadedFile) {
+      return (
+        <FileUpload 
+          onFileUpload={handleFileUpload}
+          isLoading={isLoading}
+        />
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <FileUpload 
+          onFileUpload={handleFileUpload}
+          isLoading={isLoading}
+        />
+      );
+    }
+
+    if (currentView === '2d') {
+      return (
+        <BrainViewer2D
+          currentPlane={currentPlane}
+          onPlaneChange={setCurrentPlane}
+          selectedSlice={selectedSlice}
+          totalSlices={sliceCount}
+          onSliceChange={setSelectedSlice}
+        />
+      );
+    }
+
+    return (
+      <BrainViewer3D
+        totalSlices={sliceCount}
+      />
+    );
+  };
+
   return (
-    <div style={{ width: '100vw', height: '100vh', border: '2px solid #000' }}>
-      <Canvas style={{ width: '100%', height: '100%' }} camera={{ position: [0, 0, 10] }}>
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[5, 5, 5]} intensity={1} />
-        <Model url={modelPath} />
-      </Canvas>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
+      <Header />
+      
+      <div className="flex h-screen">
+        <Sidebar 
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+
+        {/* Main Content */}
+        <div className="flex-1 flex">
+          {/* Viewer Area */}
+          <div className="flex-1 p-6">
+            <div className="relative h-full bg-gray-800 rounded-lg overflow-hidden">
+              {renderViewer()}
+            </div>
+          </div>
+
+          {/* Right Panel */}
+          <PatientInfoPanel
+            patientData={patientData}
+            onUpload={handleUploadClick}
+            on3DConversion={handle3DConversion}
+            onAnalyze={handleAnalyze}
+            hasFile={!!uploadedFile}
+          />
+        </div>
+      </div>
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".nii"
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) handleFileUpload(file);
+        }}
+        className="hidden"
+      />
     </div>
-  )
-}
+  );
+};
+
+export default MainLayout;
