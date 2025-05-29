@@ -54,7 +54,7 @@ const PatientInfoPanel = ({
       <div className="space-y-3">
         <button 
           onClick={onUpload}
-          className="w-full bg-cyan-500 hover:bg-cyan-600 py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-teal-400 hover:bg-pink-500 py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           <Upload className="w-5 h-5" />
           Upload
@@ -65,7 +65,7 @@ const PatientInfoPanel = ({
           disabled={!hasFile}
           className={`w-full py-3 rounded-lg transition-colors flex items-center justify-center gap-2 ${
             hasFile 
-              ? 'bg-pink-500 hover:bg-pink-600' 
+              ? 'bg-teal-400 hover:bg-pink-500' 
               : 'bg-gray-600 cursor-not-allowed'
           }`}
         >
@@ -78,7 +78,7 @@ const PatientInfoPanel = ({
           disabled={!hasFile}
           className={`w-full py-3 rounded-lg transition-colors flex items-center justify-center gap-2 ${
             hasFile 
-              ? 'bg-cyan-500 hover:bg-cyan-600' 
+              ? 'bg-teal-400 hover:bg-pink-500' 
               : 'bg-gray-600 cursor-not-allowed'
           }`}
         >

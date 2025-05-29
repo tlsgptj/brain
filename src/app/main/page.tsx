@@ -99,8 +99,8 @@ const MainLayout = () => {
         {/* Main Content */}
         <div className="flex-1 flex">
           {/* Viewer Area */}
-          <div className="flex-1 p-6">
-            <div className="relative h-full bg-gray-800 rounded-lg overflow-hidden">
+          <div className="flex-1">
+            <div className="relative h-full bg-black rounded-lg overflow-hidden">
               {renderViewer()}
             </div>
           </div>
