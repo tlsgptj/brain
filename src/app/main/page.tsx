@@ -88,10 +88,10 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
+    <div className="h-1170 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
       <Header />
       
-      <div className="flex h-screen">
+      <div className="flex h-1170">
         <Sidebar 
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -101,7 +101,7 @@ const MainLayout = () => {
         <div className="flex-1 flex">
           {/* Viewer Area */}
           <div className="flex-1">
-            <div className="relative h-full bg-black rounded-lg overflow-hidden">
+            <div className="relative h-1170 bg-black rounded-lg overflow-hidden">
               {renderViewer()}
             </div>
           </div>

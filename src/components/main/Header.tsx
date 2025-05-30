@@ -11,7 +11,7 @@ const Header = () => {
             style={{ background: '#2C2A42' }}
         >
             <div className="flex items-center gap-6">
-                <div className="relative w-[200px] h-[40px]">
+                <div className="relative w-[900px] h-[250px]">
                     <Image
                         src={"/images/main_logo.png"}
                         alt="main logo"
@@ -20,14 +20,6 @@ const Header = () => {
                         priority
                     />
                 </div>
-            </div>
-            <div className="flex items-center gap-4">
-                <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
-                    <Settings className="w-5 h-5" />
-                </button>
-                <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
-                    <Info className="w-5 h-5" />
-                </button>
             </div>
         </header>
     );

@@ -13,7 +13,7 @@ const Sidebar = ({ activeTab = 'activity', onTabChange = () => {} }) => {
   ];
 
   return (
-    <div className="w-12 bg-gray-800 flex flex-col items-center py-6 gap-4 border-r border-gray-700">
+    <div className="w-90 h-1170 bg-gray-800 flex flex-col items-center py-6 gap-4 border-r border-gray-700">
       {menuItems.map(({ id, icon: IconComponent, isActive }) => (
         <button
           key={id}
@@ -24,7 +24,7 @@ const Sidebar = ({ activeTab = 'activity', onTabChange = () => {} }) => {
               : 'hover:bg-gray-700'
           }`}
         >
-          <IconComponent className="w-6 h-6" />
+          <IconComponent className="w-36 h-36" />
         </button>
       ))}
     </div>
