@@ -43,7 +43,7 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
           <h1 className="text-9xl font-bold mb-8">Medical Analysis Dashboard</h1>
           
           {/* Patient Info */}
-          <div className="bg-voodoo-950 rounded-lg p-6 mb-8">
+            <div className="bg-[#402941] rounded-lg p-6 mb-8">
             <h3 className="text-7xl font-semibold mb-6 flex items-center gap-3 text-white">
               <Info className="w-20 h-20" />
               Patient Info
@@ -64,7 +64,7 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
             </div>
           </div>
 
-          <div className="bg-voodoo-950 rounded-lg p-6 mb-8">
+            <div className="bg-[#402941] rounded-[20px] p-6 mb-8">
             <h3 className="text-7xl font-semibold mb-6 text-white">Surgical Risk Assessment</h3>
             <div className="flex items-center justify-center">
               <div className="relative w-200 h-200">
@@ -104,7 +104,7 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
           </div>
 
           {/* Diagnostic Result */}
-            <div className="bg-voodoo-950 rounded-lg p-6 mb-20">
+            <div className="bg-[#402941] rounded-lg p-6 mb-20">
             <h3 className="text-7xl font-semibold mb-6 text-white mb-8">Diagnostic Analysis</h3>
             <div className="space-y-8 mb-8">
               <div className="flex items-center justify-between mb-8">
@@ -151,14 +151,14 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
 
           {/* Action Buttons */}
             <div className="space-y-4">
-            <button onClick={onUpload} className="w-full bg-teal-400 hover:bg-pink-500 py-5 px-7 rounded-[30px] transition-colors flex items-center justify-center gap-4 text-7xl font-medium text-white cursor-pointer">
+            <button onClick={onUpload} className="w-full h-40 bg-teal-400 hover:bg-pink-500 py-5 px-7 rounded-[30px] transition-colors flex items-center justify-center gap-4 text-7xl font-medium text-white cursor-pointer">
               Upload
             </button>
             
             <button
               onClick={on3DConversion}
               disabled={!hasFile}
-              className={`w-full py-5 px-7 rounded-[30px] transition-colors flex items-center justify-center gap-4 text-7xl font-medium ${
+              className={`w-full h-40 py-5 px-7 rounded-[30px] transition-colors flex items-center justify-center gap-4 text-7xl font-medium ${
               hasFile
                 ? 'bg-teal-400 hover:bg-pink-500 text-white'
                 : 'bg-gray-600 cursor-not-allowed opacity-60 text-gray-400'
@@ -170,7 +170,7 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
             <button
               onClick={onAnalyze}
               disabled={!hasFile}
-              className={`w-full py-5 px-7 rounded-[30px] transition-colors flex items-center justify-center gap-4 text-7xl font-medium ${
+              className={`w-full h-40 py-5 px-7 rounded-[30px] transition-colors flex items-center justify-center gap-4 text-7xl font-medium ${
               hasFile
                 ? 'bg-teal-400 hover:bg-pink-500 text-white'
                 : 'bg-gray-600 cursor-not-allowed opacity-60 text-gray-400'
