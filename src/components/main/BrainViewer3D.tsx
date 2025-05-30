@@ -5,6 +5,8 @@ interface BrainViewer3DProps {
   imageUrl: string | File; // string 또는 File 가능
 }
 
+//TODO : 로딩페이지 만들어야함
+
 const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const [error, setError] = useState<string | null>(null);
