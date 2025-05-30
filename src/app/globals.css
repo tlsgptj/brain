@@ -12,13 +12,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* ✅ 전체 화면 높이 적용 */
-html, body {
-  height: 1170px;
-  margin: 0;
-  padding: 0;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);

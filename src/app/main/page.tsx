@@ -81,8 +81,8 @@ const MainLayout = () => {
     }
 
     return (
-      <BrainViewer3D
-        totalSlices={sliceCount}
+      <BrainViewer3D 
+        imageUrl={uploadedFile} // Replace with the actual URL of the 3D image
       />
     );
   };
