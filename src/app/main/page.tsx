@@ -8,26 +8,26 @@ import BrainViewer2D from '../../components/main/BrainViewer2D';
 import BrainViewer3D from '../../components/main/BrainViewer3D';
 import PatientInfoPanel from '../../components/main/PatientInfoPanel';
 
+type Plane = 'axial' | 'coronal' | 'sagittal';
+
 const MainLayout = () => {
-  const [currentView, setCurrentView] = useState('2d');
+  const [currentView, setCurrentView] = useState<'2d' | '3d'>('2d');
   const [selectedSlice, setSelectedSlice] = useState(0);
-  const [currentPlane, setCurrentPlane] = useState('axial');
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [currentPlane, setCurrentPlane] = useState<Plane>('axial');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('activity');
   const [patientData, setPatientData] = useState({});
-  const fileInputRef = useRef(null);
-  
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const sliceCount = 155;
 
-  const handleFileUpload = (file) => {
+  const handleFileUpload = (file: File) => {
     setIsLoading(true);
     setUploadedFile(file);
-    
-    // Simulate file processing
+
     setTimeout(() => {
       setIsLoading(false);
-      // You can set patient data here after processing the file
       setPatientData({
         id: 'P001',
         gender: 'Unknown',
@@ -49,18 +49,9 @@ const MainLayout = () => {
   };
 
   const renderViewer = () => {
-    if (!uploadedFile) {
+    if (!uploadedFile || isLoading) {
       return (
-        <FileUpload 
-          onFileUpload={handleFileUpload}
-          isLoading={isLoading}
-        />
-      );
-    }
-
-    if (isLoading) {
-      return (
-        <FileUpload 
+        <FileUpload
           onFileUpload={handleFileUpload}
           isLoading={isLoading}
         />
@@ -80,9 +71,10 @@ const MainLayout = () => {
       );
     }
 
+    // 3D 뷰
     return (
-      <BrainViewer3D 
-        imageUrl={uploadedFile} // Replace with the actual URL of the 3D image
+      <BrainViewer3D
+        imageUrl={uploadedFile}
       />
     );
   };
@@ -90,23 +82,20 @@ const MainLayout = () => {
   return (
     <div className="h-1170 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
       <Header />
-      
+
       <div className="flex h-1170">
-        <Sidebar 
+        <Sidebar
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
 
-        {/* Main Content */}
         <div className="flex-1 flex">
-          {/* Viewer Area */}
           <div className="flex-1">
             <div className="relative h-1170 bg-black rounded-lg overflow-hidden">
               {renderViewer()}
             </div>
           </div>
 
-          {/* Right Panel */}
           <PatientInfoPanel
             patientData={patientData}
             onUpload={handleUploadClick}
@@ -117,13 +106,12 @@ const MainLayout = () => {
         </div>
       </div>
 
-      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
         accept=".nii"
         onChange={(e) => {
-          const file = e.target.files[0];
+          const file = e.target.files?.[0];
           if (file) handleFileUpload(file);
         }}
         className="hidden"

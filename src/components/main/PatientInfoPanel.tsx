@@ -18,6 +18,54 @@ interface PatientInfoPanelProps {
   hasFile?: boolean;
 }
 
+const ProgressBar = ({ value, color = "bg-pink-500" }) => (
+    <div className="w-full bg-gray-300 bg-opacity-30 rounded-full h-6">
+      <div 
+        className={`${color} h-6 rounded-full transition-all duration-300`}
+        style={{ width: `${value}%` }}
+      ></div>
+    </div>
+  );
+
+  const PieChart = ({ percentage, color = "#ec4899" }) => {
+    const radius = 160; // 기존 45에서 70으로 증가
+    const circumference = 2 * Math.PI * radius;
+    const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`;
+    const size = 400; // 기존 128(32*4)에서 160으로 증가
+
+    return (
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          className="transform -rotate-90"
+        >
+          {/* 배경 원 */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="rgba(255,255,255,0.2)"
+            strokeWidth="30"
+            fill="transparent"
+          />
+          {/* 진행률 원 */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke={color}
+            strokeWidth="30"
+            fill="transparent"
+            strokeDasharray={strokeDasharray}
+            strokeLinecap="round"
+            className="transition-all duration-500"
+          />
+        </svg>
+      </div>
+    );
+  };
 
 const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
   patientData = {},
@@ -40,113 +88,72 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
       {/* 메인 콘텐츠 영역 */}
       <div className="p-8 space-y-8">
         <div className="bg-gray-800 rounded-lg p-8 text-white">
-          <h1 className="text-9xl font-bold mb-8">Medical Analysis Dashboard</h1>
           
-          {/* Patient Info */}
-            <div className="bg-[#402941] rounded-lg p-6 mb-8">
-            <h3 className="text-7xl font-semibold mb-6 flex items-center gap-3 text-white">
-              <Info className="w-20 h-20" />
-              Patient Info
-            </h3>
-            <div className="space-y-2 text-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-7xl leading-tight">Patient ID</span>
-                <span className="font-medium text-white text-7xl leading-tight">{samplePatientData.id || '-'}</span>
+            <div className="w-full space-y-16">
+              
+              {/* Patient Info Card */}
+              <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 w-full">
+              <h2 className="text-white text-7xl font-semibold mb-12">Patient Info</h2>
+              <div className="space-y-12">
+                <div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-300 text-7xl font-medium">Age Distribution</span>
+                </div>
+                <div className="text-7xl"><ProgressBar value={65} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
+                </div>
+                <div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-300 text-7xl font-medium">Gender</span>
+                </div>
+                <div className="text-7xl"><ProgressBar value={100} color="bg-gradient-to-r from-purple-500 to-purple-400" /></div>
+                </div>
+                <div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-300 text-7xl font-medium">Risk Score</span>
+                </div>
+                <div className="text-7xl"><ProgressBar value={45} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-7xl leading-tight">Gender</span>
-                <span className="font-medium text-white text-7xl leading-tight">{samplePatientData.gender || '-'}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-7xl leading-tight">Date of birth</span>
-                <span className="font-medium text-white text-7xl leading-tight">{samplePatientData.dateOfBirth || '-'}</span>
-              </div>
-            </div>
-          </div>
 
-            <div className="bg-[#402941] rounded-[20px] p-6 mb-8">
-            <h3 className="text-7xl font-semibold mb-6 text-white">Surgical Risk Assessment</h3>
-            <div className="flex items-center justify-center">
-              <div className="relative w-200 h-200">
-                <svg className="w-200 h-200 transform -rotate-90" viewBox="0 0 100 100">
-                  {/* Background circle */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke="#374151"
-                    strokeWidth="8"
-                    fill="none"
-                  />
-                  {/* Progress circle */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke="#14b8a6"
-                    strokeWidth="8"
-                    fill="none"
-                    strokeDasharray={`${75 * 2.51} 251.2`}
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-9xl font-bold text-white">75%</div>
-                    <div className="text-7xl text-gray-400">Success Rate</div>
-                  </div>
+              {/* Surgical Info Card */}
+              <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 w-full">
+              <h2 className="text-white text-7xl font-semibold mb-12">Surgical Info</h2>
+              <div className="grid grid-cols-2 gap-16">
+                <div className="text-center">
+                <h3 className="text-gray-300 text-7xl font-medium mb-8">Surgical Risk Level</h3>
+                <div className="flex justify-center text-7xl mt-25">
+                  <PieChart percentage={75} color="#ec4899" />
+                </div>
+                </div>
+                <div className="text-center">
+                <h3 className="text-gray-300 text-7xl font-medium mb-8">Reoperation Probability</h3>
+                <div className="flex justify-center text-7xl">
+                  <PieChart percentage={60} color="#ec4899" />
+                </div>
                 </div>
               </div>
-            </div>
-            <div className="mt-4 text-6xl text-center text-gray-300">
-              Arthroscopic knee surgery with low complexity
-            </div>
-          </div>
+              </div>
 
-          {/* Diagnostic Result */}
-            <div className="bg-[#402941] rounded-lg p-6 mb-20">
-            <h3 className="text-7xl font-semibold mb-6 text-white mb-8">Diagnostic Analysis</h3>
-            <div className="space-y-8 mb-8">
-              <div className="flex items-center justify-between mb-8">
-              <span className="text-gray-300 text-7xl mb-8">Cartilage Damage</span>
-              <div className="flex items-center gap-6">
-                <div className="w-96 bg-gray-600 rounded-full h-8">
-                <div className="bg-yellow-500 h-8 rounded-full" style={{width: '60%'}}></div>
+              {/* Diagnostic Info Card */}
+              <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 mb-16 w-full">
+              <h2 className="text-white text-7xl font-semibold mb-12">Diagnostic Info</h2>
+              <div className="space-y-12">
+                <div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-300 text-7xl font-medium">Diagnostic Confidence</span>
                 </div>
-                <span className="text-white font-medium w-32 text-7xl">60%</span>
-              </div>
-              </div>
-              
-              <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-7xl mb-8">Inflammation Level</span>
-              <div className="flex items-center gap-6">
-                <div className="w-96 bg-gray-600 rounded-full h-8">
-                <div className="bg-orange-500 h-8 rounded-full" style={{width: '45%'}}></div>
+                <div className="text-7xl"><ProgressBar value={70} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
                 </div>
-                <span className="text-white font-medium w-32 text-7xl">45%</span>
-              </div>
-              </div>
-              
-              <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-7xl mb-8">Bone Density</span>
-              <div className="flex items-center gap-6">
-                <div className="w-96 bg-gray-600 rounded-full h-8">
-                <div className="bg-green-500 h-8 rounded-full" style={{width: '85%'}}></div>
+                <div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-gray-300 text-7xl font-medium">Risk Level</span>
                 </div>
-                <span className="text-white font-medium w-32 text-7xl">85%</span>
-              </div>
-              </div>
-              
-              <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-7xl">Recovery Potential</span>
-              <div className="flex items-center gap-6">
-                <div className="w-96 bg-gray-600 rounded-full h-8">
-                <div className="bg-teal-500 h-8 rounded-full" style={{width: '78%'}}></div>
+                <div className="text-7xl"><ProgressBar value={30} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
                 </div>
-                <span className="text-white font-medium w-32 text-7xl">78%</span>
               </div>
               </div>
-            </div>
+
             </div>
 
           {/* Action Buttons */}

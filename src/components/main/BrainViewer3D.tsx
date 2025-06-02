@@ -1,14 +1,13 @@
 import { useRef, useEffect, useState } from "react";
 import { Niivue } from "@niivue/niivue";
+import BrainSliceViewer from "./BrainSliceViewer";
 
 interface BrainViewer3DProps {
-  imageUrl: string | File; // string 또는 File 가능
+  imageUrl: string | File;
 }
 
-//TODO : 로딩페이지 만들어야함
-
 const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
-  const canvas = useRef<HTMLCanvasElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,30 +27,29 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
       return;
     }
 
-    const volumeList = [
+    const nv = new Niivue();
+    nv.attachToCanvas(canvasRef.current);
+    nv.loadVolumes([
       {
         url,
         ext: url.split(".").pop() || "",
       },
-    ];
-
-    const nv = new Niivue();
-    nv.attachToCanvas(canvas.current);
-    nv.loadVolumes(volumeList);
+    ]);
 
     return () => {
+      nv.destroy?.();
       if (imageUrl instanceof File) {
         URL.revokeObjectURL(url);
       }
     };
   }, [imageUrl]);
-  console.log("BrainViewer3D component rendered, imageUrl:", imageUrl);
 
   if (error) {
     return <div>{error}</div>;
   }
 
-  return <canvas ref={canvas} height={480} width={640} />;
+  // 3D 뷰어만 렌더링 (BrainSliceViewer 제거)
+  return <BrainSliceViewer imageUrl={imageUrl} viewType="render" />;
 };
 
 export default BrainViewer3D;

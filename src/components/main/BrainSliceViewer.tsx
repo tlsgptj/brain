@@ -30,7 +30,7 @@ const BrainSliceViewer: React.FC<{ imageUrl: string | File; viewType: "axial" | 
     };
 
     nv.setSliceType(sliceMap[viewType]);
-    nv.loadVolumes([{ url, ext: url.split(".").pop() || "" }]);
+    nv.loadVolumes([{ url, ext: url.split(".").pop() || "", volumeOptions: { alpha: 0.3 }}]);
 
     return () => {
       if (imageUrl instanceof File) {
@@ -41,6 +41,8 @@ const BrainSliceViewer: React.FC<{ imageUrl: string | File; viewType: "axial" | 
 
   return <canvas ref={canvasRef} width={640} height={480} />;
 };
+
+export default BrainSliceViewer;
 
 
 // TODO: 이거 로딩해야함 각각 페이지에
