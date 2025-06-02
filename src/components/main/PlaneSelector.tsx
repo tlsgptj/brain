@@ -50,7 +50,9 @@ const PlaneSelector: React.FC<PlaneSelectorProps> = ({
               : 'border-gray-600 bg-gray-800/80 hover:border-gray-500'
           }`}
         >
-          <div className="text-7xl font-medium text-white capitalize mb-1">{plane}</div>
+          <div className="flex items-center justify-between px-4 py-2 bg-pink-500 w-90 rounded-br-2xl">
+            <div className="text-7xl font-medium text-white capitalize mb-1 text-center pl-4">{plane}</div>
+          </div>
           {blobUrl && (
             <BrainSliceViewer imageUrl={blobUrl} viewType={plane} />
           )}

@@ -7,6 +7,7 @@ import FileUpload from '../../components/main/FileUpload';
 import BrainViewer2D from '../../components/main/BrainViewer2D';
 import BrainViewer3D from '../../components/main/BrainViewer3D';
 import PatientInfoPanel from '../../components/main/PatientInfoPanel';
+import { useAnalysisStore } from '@/stores/analysisStore';
 
 type Plane = 'axial' | 'coronal' | 'sagittal';
 
@@ -21,6 +22,9 @@ const MainLayout = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const sliceCount = 155;
+
+  const setAnalysisText = useAnalysisStore((state) => state.setAnalysisText);
+  const setAnalysisData = useAnalysisStore((state) => state.setAnalysisData);
 
   const handleFileUpload = (file: File) => {
     setIsLoading(true);
@@ -41,8 +45,20 @@ const MainLayout = () => {
   };
 
   const handleAnalyze = () => {
-    alert('Analysis functionality would be implemented here');
+  const dummyText = `종양 크기: 2.3cm
+                    위치: 좌측 전두엽
+                    판단: 양성 가능성 높음`;
+
+  const dummyData = {
+    eeg: [12, 18, 15, 20, 22, 19, 16],  // 뇌파 값 (예시)
+    tumorVolume: 3.5,  // cm³
+    confidence: 87,    // %
   };
+
+  setAnalysisText(dummyText);
+  setAnalysisData(dummyData);
+};
+
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();

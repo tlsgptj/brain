@@ -1,6 +1,5 @@
 "use client";
 import React from 'react';
-import { Info, Upload, Move3D, Activity } from 'lucide-react';
 
 interface PatientData {
   id?: string;
@@ -96,19 +95,19 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
               <h2 className="text-white text-7xl font-semibold mb-12">Patient Info</h2>
               <div className="space-y-12">
                 <div>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-10">
                   <span className="text-gray-300 text-7xl font-medium">Age Distribution</span>
                 </div>
                 <div className="text-7xl"><ProgressBar value={65} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
                 </div>
                 <div>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-10">
                   <span className="text-gray-300 text-7xl font-medium">Gender</span>
                 </div>
                 <div className="text-7xl"><ProgressBar value={100} color="bg-gradient-to-r from-purple-500 to-purple-400" /></div>
                 </div>
                 <div>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-10">
                   <span className="text-gray-300 text-7xl font-medium">Risk Score</span>
                 </div>
                 <div className="text-7xl"><ProgressBar value={45} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
@@ -136,24 +135,23 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
               </div>
 
               {/* Diagnostic Info Card */}
-              <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 mb-16 w-full">
+              <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 mb-100 w-full">
               <h2 className="text-white text-7xl font-semibold mb-12">Diagnostic Info</h2>
               <div className="space-y-12">
                 <div>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-10">
                   <span className="text-gray-300 text-7xl font-medium">Diagnostic Confidence</span>
                 </div>
                 <div className="text-7xl"><ProgressBar value={70} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
                 </div>
                 <div>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-10">
                   <span className="text-gray-300 text-7xl font-medium">Risk Level</span>
                 </div>
                 <div className="text-7xl"><ProgressBar value={30} color="bg-gradient-to-r from-pink-500 to-pink-400" /></div>
                 </div>
               </div>
               </div>
-
             </div>
 
           {/* Action Buttons */}

@@ -22,10 +22,10 @@ const FileUpload = ({ onFileUpload, isLoading = false }) => {
 
   if (isLoading) {
     return (
-      <div className="h-full w-full items-center justify-center">
-        <div className="text-center">
+      <div className="h-full w-full flex items-center justify-center">
+        <div className="text-center mt-32">
           <div className="w-100 h-100 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-lg">Processing NII file...</p>
+          <p className="text-7xl">Processing NII file...</p>
         </div>
       </div>
     );
