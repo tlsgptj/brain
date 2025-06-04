@@ -102,7 +102,7 @@ const MainLayout = () => {
       <div className="flex h-1170">
         <Sidebar
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={() => setActiveTab('activity')}
         />
 
         <div className="flex-1 flex">
