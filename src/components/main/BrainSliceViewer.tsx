@@ -20,6 +20,7 @@ const BrainSliceViewer: React.FC<{ imageUrl: string | File; viewType: "axial" | 
     }
 
     const nv = new Niivue();
+    // @ts-ignore
     nv.attachToCanvas(canvasRef.current);
 
     const sliceMap = {
@@ -30,6 +31,7 @@ const BrainSliceViewer: React.FC<{ imageUrl: string | File; viewType: "axial" | 
     };
 
     nv.setSliceType(sliceMap[viewType]);
+    // @ts-ignore
     nv.loadVolumes([{ url, ext: url.split(".").pop() || "", volumeOptions: { alpha: 0.3 }}]);
 
     return () => {

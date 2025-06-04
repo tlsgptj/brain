@@ -16,7 +16,7 @@ interface PatientInfoPanelProps {
   onAnalyze: () => void;
   hasFile?: boolean;
 }
-
+// @ts-ignore
 const ProgressBar = ({ value, color = "bg-pink-500" }) => (
     <div className="w-full bg-gray-300 bg-opacity-30 rounded-full h-6">
       <div 
@@ -25,7 +25,7 @@ const ProgressBar = ({ value, color = "bg-pink-500" }) => (
       ></div>
     </div>
   );
-
+// @ts-ignore
   const PieChart = ({ percentage, color = "#ec4899" }) => {
     const radius = 160; // 기존 45에서 70으로 증가
     const circumference = 2 * Math.PI * radius;

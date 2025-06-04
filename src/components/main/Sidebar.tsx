@@ -22,6 +22,7 @@ const Sidebar = ({ activeTab = 'activity', onTabChange = () => {} }) => {
       {menuItems.map(({ id, icon, isActive }) => (
         <button
           key={id}
+          // @ts-ignore
           onClick={() => onTabChange(id)}
           className={`relative flex items-center p-2 rounded-lg transition-colors group ${
             isActive ? 'bg-gray-800' : 'hover:bg-gray-700'

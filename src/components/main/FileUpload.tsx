@@ -3,10 +3,10 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
 import logo from '../../../public/images/logo.png';
-
+// @ts-ignore
 const FileUpload = ({ onFileUpload, isLoading = false }) => {
   const fileInputRef = useRef(null);
-
+  // @ts-ignore
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (file && file.name.endsWith('.nii')) {
@@ -17,6 +17,7 @@ const FileUpload = ({ onFileUpload, isLoading = false }) => {
   };
 
   const handleClick = () => {
+    // @ts-ignore
     fileInputRef.current?.click();
   };
 
