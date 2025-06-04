@@ -1,41 +1,98 @@
 "use client"
 
 import type React from "react"
-
-import { useRef, useState, useCallback } from "react"
-import BrainSliceViewer from "./BrainSliceViewer"
+import { Sky, OrbitControls, Stats, Environment, Clone, useGLTF } from "@react-three/drei"
+import { Canvas, useFrame } from "@react-three/fiber"
+import { useRef, useState, useCallback, useEffect, Suspense } from "react"
 import { useAnalysisStore } from "@/stores/analysisStore"
 import EEGChart from "./EEGChart"
 import PlaneSelector from "./PlaneSelector"
-import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from "@xyflow/react"
+import {
+  ReactFlow,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 
 interface BrainViewer3DProps {
   imageUrl: string | File
 }
 
+const Models = [
+    { name : "kim", url : "/images/brain_with_tumor.glb" },
+]
+
+const Model = ({url}: any) => {
+    const { scene } :any  = useGLTF(url)
+    return <Clone object = {scene} rotation={[Math.PI / 180, Math.PI / 3, 0]}/>
+}
+
+const Box2 = (props: JSX.IntrinsicElements['mesh']) => {
+    const mesh = useRef<THREE.Mesh>(null!)
+    useFrame(() => {
+        //mesh.current.rotation.x = mesh.current.rotation.y += 0.05
+    })
+    return(
+        <mesh {...props} ref={mesh}>
+            <boxGeometry args={[1,1,1]} />
+            <meshLambertMaterial attach="material" color="royalblue" />
+        </mesh>
+    )
+}
+
 const initialNodes = [
-  { id: "1", position: { x: 50, y: 20 }, data: { label: "Brain Analysis" } },
-  { id: "2", position: { x: 150, y: 80 }, data: { label: "EEG Data" } },
-  { id: "3", position: { x: 100, y: 140 }, data: { label: "Results" } },
+  {
+    id: "center",
+    position: { x: 2500, y: 1000 },
+    data: { label: "" },
+    draggable: false,
+    style: { background: "none", border: "none" },
+  },
+  {
+    id: "analysis",
+    position: { x: 1500, y: 1500 },
+    data: { label: "Loading..." },
+    style: {
+      backgroundColor: "#53041e", // 와인색 배경
+      color: "#F8FAFC",           // 밝은 텍스트
+      borderRadius: 24,
+      padding: "20px 25px",
+      boxShadow: "0 6px 12px rgba(0,0,0,0.5)",
+      border: "2px solid #8B1E3F",
+      fontWeight: "bold",
+      fontSize: 16,
+      width: 1000,
+      minHeight: 500,
+      overflow: "hidden",
+    },
+  },
+  {
+    id: "insight",
+    position: { x: 1000, y: 200 },
+    data: { label: "Insight" },
+    style: {
+      backgroundColor: "#53041e",
+      color: "#F8FAFC",
+      borderRadius: 24,
+      padding: "20px 25px",
+      boxShadow: "0 6px 12px rgba(0,0,0,0.5)",
+      border: "2px solid #8B1E3F",
+      fontWeight: "bold",
+      fontSize: 16,
+      width: 1000,
+      minHeight: 500,
+      overflow: "hidden",
+    },
+  },
 ]
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#E43276" } },
-  { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#3B82F6" } },
-  { id: "e1-3", source: "1", target: "3", animated: true, style: { stroke: "#8B5CF6" } },
-]
-
-const insightNodes = [
-  { id: "i1", position: { x: 80, y: 30 }, data: { label: "Frontal Lobe" } },
-  { id: "i2", position: { x: 200, y: 60 }, data: { label: "Occipital Lobe" } },
-  { id: "i3", position: { x: 140, y: 120 }, data: { label: "Correlation" } },
-]
-
-const insightEdges = [
-  { id: "ie1-2", source: "i1", target: "i2", animated: true, style: { stroke: "#10B981" } },
-  { id: "ie2-3", source: "i2", target: "i3", animated: true, style: { stroke: "#F59E0B" } },
-  { id: "ie1-3", source: "i1", target: "i3", animated: true, style: { stroke: "#EF4444" } },
+  { id: "e-center-analysis", source: "center", target: "analysis", animated: true, style: { stroke: "#E43276", strokeWidth: 8 } },
+  { id: "e-center-insight", source: "center", target: "insight", animated: true, style: { stroke: "#E43276", strokeWidth: 8 } },
 ]
 
 const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
@@ -44,151 +101,157 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
   const analysisText = useAnalysisStore((state) => state.analysisText)
   const analysisData = useAnalysisStore((state) => state.analysisData)
 
-  // Analysis panel ReactFlow state
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
-  // Insight panel ReactFlow state
-  const [insightNodesState, setInsightNodes, onInsightNodesChange] = useNodesState(insightNodes)
-  const [insightEdgesState, setInsightEdges, onInsightEdgesChange] = useEdgesState(insightEdges)
-
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), [setEdges])
 
-  const onInsightConnect = useCallback(
-    (params: any) => setInsightEdges((eds) => addEdge(params, eds)),
-    [setInsightEdges],
-  )
+  const insightText = `The correlation between the frontal and occipital lobes indicates a high synchronization, suggesting
+  focused cognitive activity during scan.`
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const handleContextLost = (e: Event) => {
+      e.preventDefault()
+      console.warn('WebGL context lost')
+      setError('WebGL context lost. Please reload the page.')
+    }
+
+    const handleContextRestored = () => {
+      console.log('WebGL context restored')
+      setError(null)
+    }
+
+    canvas.addEventListener('webglcontextlost', handleContextLost, false)
+    canvas.addEventListener('webglcontextrestored', handleContextRestored, false)
+
+    return () => {
+      canvas.removeEventListener('webglcontextlost', handleContextLost)
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored)
+    }
+  }, [])
+
+  // analysisText, insightText, analysisData 변경 시 노드 업데이트 (label 안에 그래프 포함)
+  useEffect(() => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === "analysis") {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: (
+                <div style={{ color: "white", fontSize: 40, lineHeight: 1.4 }}>
+                  <h3 style={{ margin: "0 0 12px", fontWeight: "bold" }}>Brain Analysis</h3>
+                  <div style={{ fontWeight: "normal", fontSize: 30, marginBottom: 12 }}>
+                    {analysisText || "No analysis yet"}
+                  </div>
+
+                  {analysisData.eeg && (
+                    <div
+                      style={{
+                        background: "rgba(255 255 255 / 0.15)",
+                        padding: 10,
+                        borderRadius: 12,
+                        boxShadow: "inset 0 0 10px rgba(255,255,255,0.2)",
+                      }}
+                    >
+                      <EEGChart data={analysisData.eeg} />
+                    </div>
+                  )}
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginTop: 16,
+                      fontWeight: "bold",
+                      fontSize: 30,
+                    }}
+                  >
+                    <div>
+                      <div>Accuracy</div>
+                      <div>94.2%</div>
+                    </div>
+                    <div>
+                      <div>Confidence</div>
+                      <div>87.5%</div>
+                    </div>
+                  </div>
+                </div>
+              ),
+            },
+          }
+        }
+        if (node.id === "insight") {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              label: (
+                <div style={{ color: "white", fontSize: 40, lineHeight: 1.4 }}>
+                  <h3 style={{ margin: "0 0 12px", fontWeight: "bold" }}>Additional Insight</h3>
+                  <div style={{ fontWeight: "normal", fontSize: 30, marginBottom: 12 }}>{insightText}</div>
+                  {analysisData.eeg && (
+                    <div
+                      style={{
+                        background: "rgba(255 255 255 / 0.15)",
+                        padding: 10,
+                        borderRadius: 12,
+                        boxShadow: "inset 0 0 10px rgba(255,255,255,0.2)",
+                      }}
+                    >
+                      <EEGChart data={analysisData.eeg} />
+                    </div>
+                  )}
+                </div>
+              ),
+            },
+          }
+        }
+        return node
+      }),
+    )
+  }, [analysisText, analysisData, insightText])
 
   if (error) {
     return <div>{error}</div>
   }
 
-  // 3D 뷰어만 렌더링 (BrainSliceViewer 제거)
   return (
     <div className="relative flex justify-center items-center h-full w-full bg-gradient-to-br from-slate-50 to-blue-50 text-7xl">
       <div className="absolute top-4 left-4 z-10 w-72">
         <PlaneSelector file={imageUrl instanceof File ? imageUrl : null} />
       </div>
-      <BrainSliceViewer imageUrl={imageUrl} viewType="render" />
 
-      {/* SVG for connecting lines between panels and brain viewer */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-5">
-        {analysisText && (
-          <>
-            {/* Line from brain center to analysis panel */}
-            <line
-              x1="50%"
-              y1="50%"
-              x2="75%"
-              y2="25%"
-              stroke="#E43276"
-              strokeWidth="3"
-              strokeDasharray="8,4"
-              className="animate-pulse"
-            />
-            {/* Line from brain center to insight panel */}
-            <line
-              x1="50%"
-              y1="50%"
-              x2="25%"
-              y2="75%"
-              stroke="#3B82F6"
-              strokeWidth="3"
-              strokeDasharray="8,4"
-              className="animate-pulse"
-            />
-            {/* Line connecting analysis and insight panels */}
-            <line
-              x1="75%"
-              y1="25%"
-              x2="25%"
-              y2="75%"
-              stroke="#8B5CF6"
-              strokeWidth="2"
-              strokeDasharray="5,5"
-              className="animate-pulse"
-            />
-          </>
-        )}
-      </svg>
+      <Canvas camera = {{ position : [0,0,-0.2], near : 0.025}} style={{ background: 'black' }}>
+                <Environment preset="city" />
+                <Suspense>
+                    <Model url={Models[0].url} />
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} />
+                </Suspense>
+                <OrbitControls />
+            </Canvas>
 
       {analysisText && (
-        <div className="absolute top-40 right-40 w-600 bg-[#53041e] backdrop-blur-xl rounded-2xl shadow-2xl z-10 overflow-hidden">
-          {/* Header gradient */}
-          <div className="h-1 via-indigo-500"></div>
-
-          <div className="p-6 space-y-6">
-            {/* Analysis Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div>
-                  <h3 className="font-bold text-white mb-8">Brain Analysis</h3>
-                  <div className="flex items-center gap-2 text-white">Processing Complete</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Analysis Content */}
-            <div className="space-y-4">
-              <div className="rounded-xl p-4">
-                <div className="font-bold text-[#E43276] mb-2">Analysis Results</div>
-                <div className="text-white font-bold leading-relaxed">{analysisText}</div>
-              </div>
-
-              {/* EEG Section */}
-              {analysisData.eeg && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <div className="font-bold text-white mb-4">EEG Signals</div>
-                      <div className="text-white mb-4">Neural activity patterns</div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/30 backdrop-blur-md rounded-xl p-4">
-                    <EEGChart data={analysisData.eeg} />
-                  </div>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-bold text-white">Accuracy</span>
-                  </div>
-                  <div className="font-bold text-white">94.2%</div>
-                </div>
-
-                <div className="rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-bold text-white">Confidence</span>
-                  </div>
-                  <div className="font-bold text-white">87.5%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {analysisText && (
-        <div className="absolute bottom-50 left-200 w-[500px] bg-[#53041e] backdrop-blur-xl rounded-2xl shadow-2xl z-10 overflow-hidden">
-          <div className="h-1 via-blue-500"></div>
-
-          <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div>
-                  <h3 className="font-bold text-white mb-4">Additional Insight</h3>
-                  <div className="flex items-center gap-2 text-white">Brainwave Correlation</div>
-                </div>
-              </div>
-            </div>
-            <div className="text-white leading-relaxed">
-              The correlation between the frontal and occipital lobes indicates a high synchronization, suggesting
-              focused cognitive activity during scan.
-            </div>
-          </div>
+        <div className="absolute inset-0 z-30 pointer-events-none">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+            panOnScroll
+            zoomOnScroll={false}
+            connectable={false}
+          >
+            <Background />
+            <Controls showInteractive={false} />
+          </ReactFlow>
         </div>
       )}
     </div>

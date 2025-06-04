@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@niivue/niivue": "^0.57.0",
+    "@react-three/drei": "^10.1.2",
     "@react-three/fiber": "^9.1.2",
+    "@react-three/gltfjsx": "^4.3.4",
     "@xyflow/react": "^12.6.4",
     "itk-wasm": "1.0.0-b.188",
     "lucide-react": "^0.511.0",
