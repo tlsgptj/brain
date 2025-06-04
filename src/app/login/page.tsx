@@ -47,8 +47,8 @@ export default function LoginPage() {
         <Image
           src={Logo}
           alt="Logo"
-          width={750}
-          height={100}
+          width={1500}
+          height={1200}
           priority
         />
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4 bg-none bg-opacity-80 p-8 rounded-lg shadow-lg min-w-[350px]">
@@ -57,17 +57,17 @@ export default function LoginPage() {
                 placeholder="ID"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-15 px-4 py-3 border rounded-md focus:outline-none text-gray-900 placeholder-teal-400 bg-white"
+                className="font-semibold w-full h-50 px-4 py-3 border rounded-md focus:outline-none text-gray-900 text-7xl placeholder-teal-400 bg-white"
                 />
                 <input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-3 h-15 w-full px-4 py-3 border rounded-md focus:outline-none text-gray-900 placeholder-teal-400 bg-white"
+                className="font-semibold mt-3 h-50 w-full px-4 py-3 border rounded-md focus:outline-none text-gray-900 text-7xl placeholder-teal-400 bg-white"
                 />
                 <button
-                className="mt-8 w-full h-15 py-3 text-white bg-pink-600 rounded-md hover:bg-pink-700 transition text-lg font-semibold"
+                className="mt-8 w-full h-50 py-3 text-white bg-pink-600 rounded-md hover:bg-pink-700 transition text-7xl font-semibold"
                 >
                 Log In
                 </button>

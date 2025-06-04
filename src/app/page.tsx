@@ -31,8 +31,8 @@ export default function SplashPage() {
         <Image
           src={splashName}
           alt="Splash Name"
-          width={900}
-          height={200}
+          width={1500}
+          height={800}
           priority
         />
       </div>

@@ -10,6 +10,7 @@ interface BrainViewer2DProps {
   onPlaneChange: (plane: Plane) => void;
   selectedSlice: number;
   onSliceChange: (slice: number) => void;
+  totalSlices?: number;
 }
 
 interface Dimensions {
