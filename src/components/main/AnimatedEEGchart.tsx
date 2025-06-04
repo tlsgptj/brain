@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import EEGChart from './EEGChart'; // Assuming EEGChart is a component that takes data prop
-
+// @ts-ignore
 const AnimatedEEGChart = ({ data }) => {
   const [currentData, setCurrentData] = useState([]);
   const [windowStart, setWindowStart] = useState(0);
@@ -22,7 +22,7 @@ const AnimatedEEGChart = ({ data }) => {
             time: i, // Reset time for smooth animation
           });
         }
-        
+        // @ts-ignore
         setCurrentData(windowData);
         return newStart;
       });

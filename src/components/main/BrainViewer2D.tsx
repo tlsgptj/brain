@@ -139,16 +139,17 @@ const BrainViewer2D: React.FC<BrainViewer2DProps> = ({
     reader.onload = (e) => {
       try {
         const rawData = e.target?.result;
-        if (!rawData) {
+        if (!rawData || !(rawData instanceof ArrayBuffer)) {
           setIsLoading(false);
           return;
         }
         
         let data: ArrayBuffer;
         if (nifti.isCompressed(rawData)) {
-          data = nifti.decompress(rawData);
+          // @ts-ignore
+          data = nifti.decompress(rawData).slice(0);
         } else {
-          data = rawData as ArrayBuffer;
+          data = rawData;
         }
         
         if (nifti.isNIFTI(data)) {

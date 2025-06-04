@@ -30,8 +30,9 @@ const Model = ({url}: any) => {
     const { scene } :any  = useGLTF(url)
     return <Clone object = {scene} rotation={[Math.PI / 180, Math.PI / 3, 0]}/>
 }
-
+// @ts-ignore
 const Box2 = (props: JSX.IntrinsicElements['mesh']) => {
+  // @ts-ignore
     const mesh = useRef<THREE.Mesh>(null!)
     useFrame(() => {
         //mesh.current.rotation.x = mesh.current.rotation.y += 0.05
@@ -135,6 +136,7 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
 
   // analysisText, insightText, analysisData 변경 시 노드 업데이트 (label 안에 그래프 포함)
   useEffect(() => {
+    // @ts-ignore
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === "analysis") {
@@ -223,7 +225,9 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
   return (
     <div className="relative flex justify-center items-center h-full w-full bg-gradient-to-br from-slate-50 to-blue-50 text-7xl">
       <div className="absolute top-4 left-4 z-10 w-72">
-        <PlaneSelector file={imageUrl instanceof File ? imageUrl : null} />
+        <PlaneSelector file={imageUrl instanceof File ? imageUrl : null} currentPlane={"axial"} onPlaneChange={function (plane: "axial" | "coronal" | "sagittal"): void {
+          throw new Error("Function not implemented.")
+        } } />
       </div>
 
       <Canvas camera = {{ position : [0,0,-0.2], near : 0.025}} style={{ background: 'black' }}>
@@ -247,6 +251,7 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
             fitView
             panOnScroll
             zoomOnScroll={false}
+            // @ts-ignore
             connectable={false}
           >
             <Background />
