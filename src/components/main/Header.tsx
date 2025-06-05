@@ -2,12 +2,12 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Settings, Info } from 'lucide-react';
+
 
 const Header = () => {
     return (
         <header
-            className="flex items-center justify-between p-6 border-b border-gray-700"
+            className="w-full flex items-center justify-between p-6 border-b border-gray-700"
             style={{ background: '#2C2A42' }}
         >
             <div className="flex items-center gap-6">

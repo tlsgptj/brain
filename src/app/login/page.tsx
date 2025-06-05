@@ -6,7 +6,6 @@ import Logo from "../../../public/images/logo.png";
 import { useRouter } from 'next/navigation';
 import splash from "../../../public/images/splash.png";
 
-
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
