@@ -23,7 +23,7 @@ interface BrainViewer3DProps {
 const initialNodes = [
   {
     id: "center",
-    position: { x: 2300, y: 1000 },
+    position: { x: 1500, y: 1000 },
     data: { label: "" },
     draggable: false,
     style: { background: "none", border: "none" },
