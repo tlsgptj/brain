@@ -1,56 +1,93 @@
 "use client"
 
-import React, {useRef, useEffect} from 'react';
+import React, { useRef, useEffect } from "react";
 import { Niivue } from "@niivue/niivue";
 
-const BrainSliceViewer: React.FC<{ imageUrl: string | File; viewType: "axial" | "coronal" | "sagittal" | "render" }> = ({
+type BrainSliceViewerProps = {
+  imageUrl: string | File;
+  drawingUrl?: string | File;
+  viewType: "axial" | "coronal" | "sagittal" | "render";
+};
+
+const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
   imageUrl,
+  drawingUrl,
   viewType,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const nv = useRef<Niivue | null>(null);
 
   useEffect(() => {
-    if (!imageUrl) return;
+    if (!imageUrl || !canvasRef.current) return;
 
-    let url: string;
-    if (typeof imageUrl === "string") {
-      url = imageUrl;
-    } else {
-      url = URL.createObjectURL(imageUrl);
-    }
-
-    const nv = new Niivue();
-    // @ts-ignore
-    nv.attachToCanvas(canvasRef.current);
+    nv.current = new Niivue();
+    nv.current.attachToCanvas(canvasRef.current);
 
     const sliceMap = {
-      axial: nv.sliceTypeAxial,
-      coronal: nv.sliceTypeCoronal,
-      sagittal: nv.sliceTypeSagittal,
-      render: nv.sliceTypeRender,
+      axial: nv.current.sliceTypeAxial,
+      coronal: nv.current.sliceTypeCoronal,
+      sagittal: nv.current.sliceTypeSagittal,
+      render: nv.current.sliceTypeRender,
     };
 
-    nv.setSliceType(sliceMap[viewType]);
-    // @ts-ignore
-    nv.loadVolumes([{ url, ext: url.split(".").pop() || "", volumeOptions: { alpha: 0.3 }}]);
+    nv.current.setSliceType(sliceMap[viewType]);
 
-    return () => {
-      if (imageUrl instanceof File) {
-        URL.revokeObjectURL(url);
+    const url =
+      typeof imageUrl === "string"
+        ? imageUrl
+        : URL.createObjectURL(imageUrl);
+    const drawingPath =
+      drawingUrl
+        ? typeof drawingUrl === "string"
+          ? drawingUrl
+          : URL.createObjectURL(drawingUrl)
+        : null;
+
+    const loadVolumes = async () => {
+      try {
+        // @ts-ignore
+        await nv.current!.loadVolumes([
+          {
+            url,
+            // @ts-ignore
+            ext: url.split(".").pop() || "",
+            volumeOptions: { alpha: 0.3 },
+          },
+        ]);
+        if (drawingPath) {
+          await nv.current!.setDrawingEnabled(true);
+          await nv.current!.loadDrawingFromUrl(drawingPath);
+          nv.current!.setDrawOpacity(0.5);
+          // @ts-ignore
+          nv.current!.setDrawColormap({
+            R: [0, 255],
+            G: [0, 0],
+            B: [0, 0],
+            labels: ["Background", "Tumor"],
+          });
+        }
+      } catch (e) {
+        console.error("Error loading volumes:", e);
       }
     };
-  }, [imageUrl, viewType]);
+
+    loadVolumes();
+
+    return () => {
+      if (typeof imageUrl !== "string") URL.revokeObjectURL(url);
+      if (drawingUrl && typeof drawingUrl !== "string" && drawingPath)
+        URL.revokeObjectURL(drawingPath);
+      nv.current = null;
+    };
+  }, [imageUrl, drawingUrl, viewType]);
 
   return <canvas ref={canvasRef} width={640} height={480} />;
 };
 
 export default BrainSliceViewer;
 
-
-// TODO: 이거 로딩해야함 각각 페이지에
-
-{/* <BrainSliceViewer imageUrl={imageUrl} viewType="axial" />
-<BrainSliceViewer imageUrl={imageUrl} viewType="coronal" />
-<BrainSliceViewer imageUrl={imageUrl} viewType="sagittal" />
-<BrainSliceViewer imageUrl={imageUrl} viewType="render" /> */}
-
+// 사용 예시
+// <BrainSliceViewer imageUrl={imageUrl} viewType="axial" />
+// <BrainSliceViewer imageUrl={imageUrl} viewType="coronal" />
+// <BrainSliceViewer imageUrl={imageUrl} viewType="sagittal" />
+// <BrainSliceViewer imageUrl={imageUrl} viewType="render" />

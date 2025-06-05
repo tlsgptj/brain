@@ -54,7 +54,7 @@ const PlaneSelector: React.FC<PlaneSelectorProps> = ({
             <div className="text-7xl font-medium text-white capitalize mb-1 text-center pl-4">{plane}</div>
           </div>
           {blobUrl && (
-            <BrainSliceViewer imageUrl={blobUrl} viewType={plane} />
+            <BrainSliceViewer imageUrl={blobUrl} drawingUrl="/images/BRATS_001.nii.gz" viewType={plane} />
           )}
         </button>
       ))}

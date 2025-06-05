@@ -1,15 +1,13 @@
 "use client"
 
 import type React from "react"
-import { Sky, OrbitControls, Stats, Environment, Clone, useGLTF } from "@react-three/drei"
-import { Canvas, useFrame } from "@react-three/fiber"
 import { useRef, useState, useCallback, useEffect, Suspense } from "react"
 import { useAnalysisStore } from "@/stores/analysisStore"
 import EEGChart from "./EEGChart"
+import BrainSliceViewer from "./BrainSliceViewer"
 import PlaneSelector from "./PlaneSelector"
 import {
   ReactFlow,
-  MiniMap,
   Controls,
   Background,
   useNodesState,
@@ -22,33 +20,10 @@ interface BrainViewer3DProps {
   imageUrl: string | File
 }
 
-const Models = [
-    { name : "kim", url : "/images/brain_with_tumor.glb" },
-]
-
-const Model = ({url}: any) => {
-    const { scene } :any  = useGLTF(url)
-    return <Clone object = {scene} rotation={[Math.PI / 180, Math.PI / 3, 0]}/>
-}
-// @ts-ignore
-const Box2 = (props: JSX.IntrinsicElements['mesh']) => {
-  // @ts-ignore
-    const mesh = useRef<THREE.Mesh>(null!)
-    useFrame(() => {
-        //mesh.current.rotation.x = mesh.current.rotation.y += 0.05
-    })
-    return(
-        <mesh {...props} ref={mesh}>
-            <boxGeometry args={[1,1,1]} />
-            <meshLambertMaterial attach="material" color="royalblue" />
-        </mesh>
-    )
-}
-
 const initialNodes = [
   {
     id: "center",
-    position: { x: 2500, y: 1000 },
+    position: { x: 2300, y: 1000 },
     data: { label: "" },
     draggable: false,
     style: { background: "none", border: "none" },
@@ -101,7 +76,6 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
   const [error, setError] = useState<string | null>(null)
   const analysisText = useAnalysisStore((state) => state.analysisText)
   const analysisData = useAnalysisStore((state) => state.analysisData)
-
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
@@ -230,15 +204,7 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
         } } />
       </div>
 
-      <Canvas camera = {{ position : [0,0,-0.2], near : 0.025}} style={{ background: 'black' }}>
-                <Environment preset="city" />
-                <Suspense>
-                    <Model url={Models[0].url} />
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} />
-                </Suspense>
-                <OrbitControls />
-            </Canvas>
+      <BrainSliceViewer imageUrl={imageUrl} drawingUrl="/images/BRATS_001.nii.gz" viewType="render" />
 
       {analysisText && (
         <div className="absolute inset-0 z-30 pointer-events-none">
