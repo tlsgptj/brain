@@ -31,6 +31,8 @@ const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
     };
 
     nv.current.setSliceType(sliceMap[viewType]);
+    // @ts-ignore
+    nv.current.opts.crosshairColor = [0, 0, 0, 0];
 
     const url =
       typeof imageUrl === "string"

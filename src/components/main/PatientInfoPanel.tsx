@@ -41,14 +41,14 @@ const ProgressBar = ({ value, color = "bg-pink-500" }) => (
           className="transform -rotate-90"
         >
           {/* 배경 원 */}
-          <circle
+            <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="rgba(255,255,255,0.2)"
+            stroke="#D1D5DB" 
             strokeWidth="30"
             fill="transparent"
-          />
+            />
           {/* 진행률 원 */}
           <circle
             cx={size / 2}
