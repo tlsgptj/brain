@@ -44,7 +44,7 @@ const PlaneSelector: React.FC<PlaneSelectorProps> = ({
         <button
           key={plane}
           onClick={() => onPlaneChange(plane)}
-          className={`block w-[420px] h-[400px] rounded-lg border-5 transition-all ${
+          className={`block w-[1300px] h-[1000px] rounded-lg border-5 transition-all ${
             currentPlane === plane
               ? 'border-pink-500 bg-pink-500/20'
               : 'border-gray-600 bg-gray-800/80 hover:border-gray-500'
@@ -54,7 +54,7 @@ const PlaneSelector: React.FC<PlaneSelectorProps> = ({
             <div className="text-7xl font-medium text-white capitalize mb-1 text-center pl-4">{plane}</div>
           </div>
           {blobUrl && (
-            <div className="w-[80%] mx-auto">
+            <div className="h-[90%] mx-auto">
               <BrainSliceViewer imageUrl={blobUrl} drawingUrl="/images/BRATS_001.nii.gz" viewType={plane} />
             </div>
           )}
