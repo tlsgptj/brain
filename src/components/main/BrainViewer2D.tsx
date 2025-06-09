@@ -240,7 +240,7 @@ const BrainViewer2D: React.FC<BrainViewer2DProps> = ({
     <div className="relative h-full flex flex-col">
       <PlaneSelector currentPlane={currentPlane} onPlaneChange={onPlaneChange} file={niiFile} />
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-400 h-full bg-black rounded-lg flex items-center justify-center border border-gray-600">
+        <div className="w-400 h-full bg-black rounded-lg flex items-center justify-center">
           {fullSlices[selectedSlice] ? (
             <img
               src={fullSlices[selectedSlice]}

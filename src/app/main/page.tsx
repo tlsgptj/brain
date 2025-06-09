@@ -45,9 +45,9 @@ const MainLayout = () => {
   };
 
   const handleAnalyze = () => {
-  const dummyText = `종양 크기: 2.3cm
-                    위치: 좌측 전두엽
-                    판단: 양성 가능성 높음`;
+  const dummyText = `Tumor size: 2.3 cm
+                    Location: Left frontal lobe
+                    Assessment: High likelihood of being benign`;
 
   const dummyData = {
     eeg: [12, 18, 15, 20, 22, 19, 16],  // 뇌파 값 (예시)
@@ -96,7 +96,7 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="h-1170 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
       <Header />
 
       <div className="flex h-1170">
