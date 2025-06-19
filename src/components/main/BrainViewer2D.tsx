@@ -194,11 +194,11 @@ const BrainViewer2D: React.FC<BrainViewer2DProps> = ({
       const midSlice = Math.floor(sliceCount / 2);
       onSliceChange(midSlice);  // 부모 컴포넌트 상태 변경 콜백 호출
 
-      // 중간값 기준으로 visibleSlices 설정
-      const start = Math.max(0, midSlice - Math.floor(VISIBLE_SLICE_COUNT / 2));
-      const end = Math.min(sliceCount, start + VISIBLE_SLICE_COUNT);
-      setVisibleSlices(slices.slice(start, end));
-      
+      // 중간 기준 6장 설정
+      const start = Math.max(0, midSlice - 3);
+      const end = Math.min(sliceCount, midSlice + 4); // mid 포함 + 앞뒤 3장
+      setVisibleSlices(slices.slice(start, end)); // ← 썸네일용 6~7장만 저장
+
       setIsLoading(false);
       console.log(`[BrainViewer2D] Plane changed to ${currentPlane}, sliceCount = ${sliceCount}`);
     } catch (error) {

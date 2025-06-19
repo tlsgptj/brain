@@ -84,13 +84,11 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
 
   return (
     <div className="h-1170 w-400 bg-gray-900">
-      {/* 메인 콘텐츠 영역 */}
       <div className="p-8 space-y-8">
         <div className="bg-gray-800 rounded-lg p-8 text-white">
           
             <div className="w-full space-y-16">
               
-              {/* Patient Info Card */}
               <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 w-full">
               <h2 className="text-white text-7xl font-semibold mb-12">Patient Info</h2>
               <div className="space-y-12">
@@ -115,7 +113,6 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
               </div>
               </div>
 
-              {/* Surgical Info Card */}
               <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 w-full">
               <h2 className="text-white text-7xl font-semibold mb-12">Surgical Info</h2>
               <div className="grid grid-cols-2 gap-16">
@@ -134,7 +131,6 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
               </div>
               </div>
 
-              {/* Diagnostic Info Card */}
               <div className="bg-[#402941] bg-opacity-60 backdrop-blur-sm rounded-4xl p-16 border-4 border-[#402941] border-opacity-80 mb-100 w-full">
               <h2 className="text-white text-7xl font-semibold mb-12">Diagnostic Info</h2>
               <div className="space-y-12">
@@ -154,7 +150,6 @@ const PatientInfoPanel: React.FC<PatientInfoPanelProps> = ({
               </div>
             </div>
 
-          {/* Action Buttons */}
             <div className="space-y-4">
             <button onClick={onUpload} className="w-full h-40 bg-teal-400 hover:bg-pink-500 py-5 px-7 rounded-[30px] transition-colors flex items-center justify-center gap-4 text-7xl font-medium text-white cursor-pointer">
               Upload
