@@ -1,1 +1,2 @@
 public/images/tumor_resized.nii.gz filter=lfs diff=lfs merge=lfs -text
+*.nii.gz filter=lfs diff=lfs merge=lfs -text
