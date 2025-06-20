@@ -204,7 +204,7 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
         } } />
       </div>
 
-      <BrainSliceViewer imageUrl={imageUrl} drawingUrl="/images/BRATS_001.nii.gz" viewType="render" />
+      <BrainSliceViewer imageUrl={imageUrl} drawingUrl="/images/tumor_resized.nii.gz" viewType="render" />
 
       {analysisText && (
         <div className="absolute inset-0 z-30 pointer-events-none">

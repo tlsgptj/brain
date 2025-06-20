@@ -47,6 +47,7 @@ const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
 
     const loadVolumes = async () => {
       try {
+        // 1. 뇌 영상 로드
         // @ts-ignore
         await nv.current!.loadVolumes([
           {
@@ -56,6 +57,8 @@ const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
             volumeOptions: { alpha: 0.3 },
           },
         ]);
+
+        // 2. 종양 마스크 로드
         if (drawingPath) {
           await nv.current!.setDrawingEnabled(true);
           await nv.current!.loadDrawingFromUrl(drawingPath);
@@ -67,6 +70,9 @@ const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
             B: [0, 0],
             labels: ["Background", "Tumor"],
           });
+
+          // 3. 해상도 차이 대응 (비율 계산은 Niivue 내부에서 자동으로 적용됨)
+          // ※ 단, drawing과 image가 다른 해상도라도 동일한 공간 기준이면 정상 작동
         }
       } catch (e) {
         console.error("Error loading volumes:", e);
@@ -83,13 +89,7 @@ const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
     };
   }, [imageUrl, drawingUrl, viewType]);
 
-  return <canvas ref={canvasRef} width={640} height={480} />;
+  return <canvas ref={canvasRef} width={256} height={256} />;
 };
 
 export default BrainSliceViewer;
-
-// 사용 예시
-// <BrainSliceViewer imageUrl={imageUrl} viewType="axial" />
-// <BrainSliceViewer imageUrl={imageUrl} viewType="coronal" />
-// <BrainSliceViewer imageUrl={imageUrl} viewType="sagittal" />
-// <BrainSliceViewer imageUrl={imageUrl} viewType="render" />
