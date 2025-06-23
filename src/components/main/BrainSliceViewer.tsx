@@ -89,7 +89,7 @@ const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
     };
   }, [imageUrl, drawingUrl, viewType]);
 
-  return <canvas ref={canvasRef} width={256} height={256} />;
+  return <canvas ref={canvasRef} width={400} height={256} />;
 };
 
 export default BrainSliceViewer;
