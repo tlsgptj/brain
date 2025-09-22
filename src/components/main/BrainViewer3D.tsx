@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useRef, useState, useCallback, useEffect, Suspense } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
 import { useAnalysisStore } from "@/stores/analysisStore"
 import EEGChart from "./EEGChart"
 import BrainSliceViewer from "./BrainSliceViewer"
@@ -14,7 +14,7 @@ import {
   useEdgesState,
   addEdge,
 } from "@xyflow/react"
-import "@xyflow/react/dist/style.css"
+import "@xyflow/react/dist/style.css" 
 
 interface BrainViewer3DProps {
   imageUrl: string | File
