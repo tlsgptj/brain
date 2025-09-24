@@ -9,12 +9,19 @@ interface PlaneSelectorProps {
   file: File | null;
   currentPlane: Plane;
   onPlaneChange: (plane: Plane) => void;
+
+  sessionId?: string;
+  useApiSlices?: boolean;      
+  indexPerPlane?: Record<Plane, number>;
 }
 
 const PlaneSelector: React.FC<PlaneSelectorProps> = ({
   file,
   currentPlane,
   onPlaneChange,
+  sessionId,
+  useApiSlices = false,
+  indexPerPlane,
 }) => {
   const [blobUrl, setBlobUrl] = useState<string>('');
 
@@ -51,13 +58,22 @@ const PlaneSelector: React.FC<PlaneSelectorProps> = ({
           }`}
         >
           <div className="flex items-center justify-between px-4 py-2 bg-pink-500 w-90 rounded-br-2xl">
-            <div className="text-7xl font-medium text-white capitalize mb-1 text-center pl-4">{plane}</div>
-          </div>
-          {blobUrl && (
-            <div className="h-[90%] mx-auto">
-              <BrainSliceViewer imageUrl={blobUrl} drawingUrl="https://brainglb.s3.ap-northeast-2.amazonaws.com/aspect_preserved_final_tumor.nii.gz" viewType={plane} />
+            <div className="text-7xl font-medium text-white capitalize mb-1 text-center pl-4">
+              {plane}
             </div>
-          )}
+          </div>
+
+          <div className="h-[90%] mx-auto">
+            <BrainSliceViewer
+              imageUrl={blobUrl}
+              useApiSlices={useApiSlices}
+              sessionId={sessionId}
+              plane={plane}
+              index={indexPerPlane?.[plane]}     
+              viewType={plane}                   
+              drawingUrl="https://brainglb.s3.ap-northeast-2.amazonaws.com/aspect_preserved_final_tumor.nii.gz"
+            />
+          </div>
         </button>
       ))}
     </div>

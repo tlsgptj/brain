@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from "next/image";
-import Logo from "../../../public/images/logo.png";
+import Logo from "../../../public/images/splash_name.png";
 import { useRouter } from 'next/navigation';
 import splash from "../../../public/images/splash.png";
 
@@ -46,8 +46,8 @@ export default function LoginPage() {
         <Image
           src={Logo}
           alt="Logo"
-          width={1500}
-          height={1200}
+          width={1000}
+          height={600}
           priority
         />
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4 bg-none bg-opacity-80 p-8 rounded-lg shadow-lg min-w-[350px]">

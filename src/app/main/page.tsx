@@ -8,14 +8,14 @@ import BrainViewer2D from '../../components/main/BrainViewer2D';
 import BrainViewer3D from '../../components/main/BrainViewer3D';
 import PatientInfoPanel from '../../components/main/PatientInfoPanel';
 import { useAnalysisStore } from '@/stores/analysisStore';
-
-type Plane = 'axial' | 'coronal' | 'sagittal';
+import { uploadNifti, type Plane } from '@/api/main_api';
 
 const MainLayout = () => {
   const [currentView, setCurrentView] = useState<'2d' | '3d'>('2d');
   const [selectedSlice, setSelectedSlice] = useState(0);
   const [currentPlane, setCurrentPlane] = useState<Plane>('axial');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [sessionId, setSessionId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('activity');
   const [patientData, setPatientData] = useState({});
@@ -26,18 +26,28 @@ const MainLayout = () => {
   const setAnalysisText = useAnalysisStore((state) => state.setAnalysisText);
   const setAnalysisData = useAnalysisStore((state) => state.setAnalysisData);
 
-  const handleFileUpload = (file: File) => {
-    setIsLoading(true);
-    setUploadedFile(file);
+  const handleFileUpload = async (file: File) => {
+    try {
+      setIsLoading(true);
+      setUploadedFile(file);
 
-    setTimeout(() => {
-      setIsLoading(false);
+      const { session_id } = await uploadNifti(file);
+      setSessionId(session_id);
+
+      // 임시 환자 메타 (실제 메타가 있다면 백엔드 값으로 세팅)
       setPatientData({
-        id: 'P001',
+        id: session_id.slice(0, 8),
         gender: 'Unknown',
-        dateOfBirth: 'Unknown'
+        dateOfBirth: 'Unknown',
       });
-    }, 2000);
+    } catch (e: any) {
+      console.error(e);
+      alert(e.message ?? 'Upload failed');
+      setUploadedFile(null);
+      setSessionId('');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handle3DConversion = () => {
