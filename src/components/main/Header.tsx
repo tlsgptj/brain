@@ -11,7 +11,7 @@ const Header = () => {
         >
             <div className="mx-auto flex items-center justify-start p-6">
                 <div className="flex items-center gap-6">
-                    <div className="relative w-[900px] h-[250px]">
+                    <div className="relative w-[1100px] h-[250px]">
                         <Image
                             src={"/images/main_logo.png"}
                             alt="main logo"

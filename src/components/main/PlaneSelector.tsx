@@ -65,13 +65,13 @@ const PlaneSelector: React.FC<PlaneSelectorProps> = ({
 
           <div className="h-[90%] mx-auto">
             <BrainSliceViewer
-              imageUrl={blobUrl}
-              useApiSlices={useApiSlices}
-              sessionId={sessionId}
-              plane={plane}
-              index={indexPerPlane?.[plane]}     
-              viewType={plane}                   
+              imageUrl={file ?? undefined}
+              useApiSlices={false}
+              sessionId={undefined}
+              plane={plane}       // 이건 BrainSliceViewer에서 API모드가 꺼져있으면 무시됨
+              index={undefined}   // 동일
               drawingUrl="https://brainglb.s3.ap-northeast-2.amazonaws.com/aspect_preserved_final_tumor.nii.gz"
+              viewType={plane}
             />
           </div>
         </button>
