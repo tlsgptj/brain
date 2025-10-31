@@ -3,16 +3,18 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
 import logo from '../../../public/images/logo.png';
+
 // @ts-ignore
 const FileUpload = ({ onFileUpload, isLoading = false }) => {
   const fileInputRef = useRef(null);
+
   // @ts-ignore
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
-    if (file && file.name.endsWith('.nii')) {
+    if (file && (file.name.endsWith('.nii') || file.name.endsWith('.nii.gz'))) {
       onFileUpload(file);
     } else {
-      alert('Please upload a valid .nii file');
+      alert('Please upload a valid .nii or .nii.gz file');
     }
   };
 
@@ -32,19 +34,31 @@ const FileUpload = ({ onFileUpload, isLoading = false }) => {
     );
   }
 
-return (
-    <div className="h-full flex items-center justify-center">
-        <div className="relative w-1000 h-120 flex items-center justify-center">
-            <Image
-                src={logo}
-                alt="main logo"
-                fill
-                className="object-contain"
-                priority
-            />
-        </div>
+  return (
+    <div className="h-full flex flex-col items-center justify-center">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".nii,.nii.gz"   
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+
+      <div
+        onClick={handleClick}
+        className="cursor-pointer relative w-[400px] h-[120px] flex items-center justify-center hover:opacity-90"
+      >
+        <Image
+          src={logo}
+          alt="main logo"
+          fill
+          className="object-contain"
+          priority
+        />
+      </div>
+      <p className="mt-6 text-lg text-gray-600">Click logo to upload .nii or .nii.gz file</p>
     </div>
-);
+  );
 };
 
 export default FileUpload;

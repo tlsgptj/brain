@@ -8,13 +8,16 @@ async function asError(res: Response) {
 }
 
 /** 업로드 */
-export async function uploadNifti(file: File): Promise<{ session_id: string }> {
+export async function uploadNifti(file: File): Promise<{ session_id: string; input_url?: string }> {
   const fd = new FormData();
   fd.append("file", file);
   const res = await fetch(`${BASE}/upload-nifti`, { method: "POST", body: fd });
   if (!res.ok) throw await asError(res);
   const data = await res.json();
-  return typeof data === "string" ? { session_id: data } : data;
+  return {
+    session_id: data.session_id,
+    input_url: data.input_url,
+  };
 }
 
 /** 슬라이스 PNG → blob URL 반환 */
