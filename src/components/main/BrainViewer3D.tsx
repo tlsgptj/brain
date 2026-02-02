@@ -22,6 +22,12 @@ import "@xyflow/react/dist/style.css"
 // ✅ label을 string이 아니라 JSX까지 허용하도록
 type NodeData = { label: React.ReactNode }
 
+interface BrainViewer3DProps {
+  imageUrl: string | File
+}
+
+type Plane = "axial" | "coronal" | "sagittal" | "render"
+
 const initialNodes: Node<NodeData>[] = [
   {
     id: "center",
