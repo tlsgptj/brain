@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import React, { useRef, useEffect } from "react";
 import { Niivue } from "@niivue/niivue";
 
 type BrainSliceViewerProps = {
-  imageUrl: string | File;
-  drawingUrl?: string | File;
+  imageUrl: File;
+  drawingUrl?: File | string;
   viewType: "axial" | "coronal" | "sagittal" | "render";
 };
 
@@ -15,77 +15,65 @@ const BrainSliceViewer: React.FC<BrainSliceViewerProps> = ({
   viewType,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const nv = useRef<Niivue | null>(null);
+  const nvRef = useRef<Niivue | null>(null);
 
   useEffect(() => {
-    if (!imageUrl || !canvasRef.current) return;
+    if (!canvasRef.current) return;
 
-    nv.current = new Niivue();
-    nv.current.attachToCanvas(canvasRef.current);
+    const nv = new Niivue();
+    nv.attachToCanvas(canvasRef.current);
+    nvRef.current = nv;
 
     const sliceMap = {
-      axial: nv.current.sliceTypeAxial,
-      coronal: nv.current.sliceTypeCoronal,
-      sagittal: nv.current.sliceTypeSagittal,
-      render: nv.current.sliceTypeRender,
-    };
+      axial: nv.sliceTypeAxial,
+      coronal: nv.sliceTypeCoronal,
+      sagittal: nv.sliceTypeSagittal,
+      render: nv.sliceTypeRender,
+    } as const;
 
-    nv.current.setSliceType(sliceMap[viewType]);
+    nv.setSliceType(sliceMap[viewType]);
     // @ts-ignore
-    nv.current.opts.crosshairColor = [0, 0, 0, 0];
+    nv.opts.crosshairColor = [0, 0, 0, 0];
 
-    const url =
-      typeof imageUrl === "string"
-        ? imageUrl
-        : URL.createObjectURL(imageUrl);
-    const drawingPath =
-      drawingUrl
-        ? typeof drawingUrl === "string"
-          ? drawingUrl
-          : URL.createObjectURL(drawingUrl)
-        : null;
-
-    const loadVolumes = async () => {
+    const load = async () => {
       try {
-        // 1. 뇌 영상 로드
-        // @ts-ignore
-        await nv.current!.loadVolumes([
-          {
-            url,
-            // @ts-ignore
-            ext: url.split(".").pop() || "",
-            volumeOptions: { alpha: 0.3 },
-          },
-        ]);
+        // 1️⃣ base volume
+        const baseBuf = await imageUrl.arrayBuffer();
+        await nv.loadFromArrayBuffer(baseBuf, imageUrl.name);
 
-        // 2. 종양 마스크 로드
-        if (drawingPath) {
-          await nv.current!.setDrawingEnabled(true);
-          await nv.current!.loadDrawingFromUrl(drawingPath);
-          nv.current!.setDrawOpacity(0.5);
-          // @ts-ignore
-          nv.current!.setDrawColormap({
-            R: [0, 255],
-            G: [0, 0],
-            B: [0, 0],
-            labels: ["Background", "Tumor"],
-          });
+        // 2️⃣ mask overlay
+        if (drawingUrl) {
+          let maskBuf: ArrayBuffer;
+          let maskName: string;
 
-          // 3. 해상도 차이 대응 (비율 계산은 Niivue 내부에서 자동으로 적용됨)
-          // ※ 단, drawing과 image가 다른 해상도라도 동일한 공간 기준이면 정상 작동
+          if (drawingUrl instanceof File) {
+            maskBuf = await drawingUrl.arrayBuffer();
+            maskName = drawingUrl.name;
+          } else {
+            const res = await fetch(drawingUrl);
+            maskBuf = await res.arrayBuffer();
+            maskName = drawingUrl.split("/").pop() ?? "mask.nii.gz";
+          }
+
+          await nv.loadFromArrayBuffer(maskBuf, maskName);
+
+          if (nv.volumes.length > 1) {
+            const overlay = nv.volumes[1];
+            overlay.opacity = 0.5;
+            nv.setColormap(overlay.id, "red");
+          }
         }
       } catch (e) {
         console.error("Error loading volumes:", e);
       }
     };
 
-    loadVolumes();
+    load();
 
     return () => {
-      if (typeof imageUrl !== "string") URL.revokeObjectURL(url);
-      if (drawingUrl && typeof drawingUrl !== "string" && drawingPath)
-        URL.revokeObjectURL(drawingPath);
-      nv.current = null;
+      // ✅ Niivue에는 dispose가 없음 → 참조만 끊어주면 충분
+      nvRef.current = null;
+      // canvas는 React가 제거함
     };
   }, [imageUrl, drawingUrl, viewType]);
 

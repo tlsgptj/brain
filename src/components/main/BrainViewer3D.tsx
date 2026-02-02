@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useRef, useState, useCallback, useEffect, Suspense } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
 import { useAnalysisStore } from "@/stores/analysisStore"
 import EEGChart from "./EEGChart"
 import BrainSliceViewer from "./BrainSliceViewer"
@@ -13,18 +13,20 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
+  type Node,
+  type Edge,
+  type Connection,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 
-interface BrainViewer3DProps {
-  imageUrl: string | File
-}
+// ✅ label을 string이 아니라 JSX까지 허용하도록
+type NodeData = { label: React.ReactNode }
 
-const initialNodes = [
+const initialNodes: Node<NodeData>[] = [
   {
     id: "center",
     position: { x: 1500, y: 1000 },
-    data: { label: "" },
+    data: { label: "" }, // string이어도 OK (ReactNode니까)
     draggable: false,
     style: { background: "none", border: "none" },
   },
@@ -33,8 +35,8 @@ const initialNodes = [
     position: { x: 1500, y: 1500 },
     data: { label: "Loading..." },
     style: {
-      backgroundColor: "#53041e", // 와인색 배경
-      color: "#F8FAFC",           // 밝은 텍스트
+      backgroundColor: "#53041e",
+      color: "#F8FAFC",
       borderRadius: 24,
       padding: "20px 25px",
       boxShadow: "0 6px 12px rgba(0,0,0,0.5)",
@@ -66,18 +68,36 @@ const initialNodes = [
   },
 ]
 
-const initialEdges = [
-  { id: "e-center-analysis", source: "center", target: "analysis", animated: true, style: { stroke: "#E43276", strokeWidth: 8 } },
-  { id: "e-center-insight", source: "center", target: "insight", animated: true, style: { stroke: "#E43276", strokeWidth: 8 } },
+const initialEdges: Edge[] = [
+  {
+    id: "e-center-analysis",
+    source: "center",
+    target: "analysis",
+    animated: true,
+    style: { stroke: "#E43276", strokeWidth: 8 },
+  },
+  {
+    id: "e-center-insight",
+    source: "center",
+    target: "insight",
+    animated: true,
+    style: { stroke: "#E43276", strokeWidth: 8 },
+  },
 ]
+
 
 const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [error, setError] = useState<string | null>(null)
+
   const analysisText = useAnalysisStore((state) => state.analysisText)
   const analysisData = useAnalysisStore((state) => state.analysisData)
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  // ✅ plane 선택 상태 추가
+  const [plane, setPlane] = useState<Plane>("axial")
 
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), [setEdges])
 
@@ -90,27 +110,25 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
 
     const handleContextLost = (e: Event) => {
       e.preventDefault()
-      console.warn('WebGL context lost')
-      setError('WebGL context lost. Please reload the page.')
+      console.warn("WebGL context lost")
+      setError("WebGL context lost. Please reload the page.")
     }
 
     const handleContextRestored = () => {
-      console.log('WebGL context restored')
+      console.log("WebGL context restored")
       setError(null)
     }
 
-    canvas.addEventListener('webglcontextlost', handleContextLost, false)
-    canvas.addEventListener('webglcontextrestored', handleContextRestored, false)
+    canvas.addEventListener("webglcontextlost", handleContextLost, false)
+    canvas.addEventListener("webglcontextrestored", handleContextRestored, false)
 
     return () => {
-      canvas.removeEventListener('webglcontextlost', handleContextLost)
-      canvas.removeEventListener('webglcontextrestored', handleContextRestored)
+      canvas.removeEventListener("webglcontextlost", handleContextLost)
+      canvas.removeEventListener("webglcontextrestored", handleContextRestored)
     }
   }, [])
 
-  // analysisText, insightText, analysisData 변경 시 노드 업데이트 (label 안에 그래프 포함)
   useEffect(() => {
-    // @ts-ignore
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === "analysis") {
@@ -161,6 +179,7 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
             },
           }
         }
+
         if (node.id === "insight") {
           return {
             ...node,
@@ -170,6 +189,7 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
                 <div style={{ color: "white", fontSize: 40, lineHeight: 1.4 }}>
                   <h3 style={{ margin: "0 0 12px", fontWeight: "bold" }}>Additional Insight</h3>
                   <div style={{ fontWeight: "normal", fontSize: 30, marginBottom: 12 }}>{insightText}</div>
+
                   {analysisData.eeg && (
                     <div
                       style={{
@@ -187,24 +207,36 @@ const BrainViewer3D: React.FC<BrainViewer3DProps> = ({ imageUrl }) => {
             },
           }
         }
+
         return node
       }),
     )
-  }, [analysisText, analysisData, insightText])
+  }, [analysisText, analysisData, insightText, setNodes])
 
-  if (error) {
-    return <div>{error}</div>
-  }
+  if (error) return <div>{error}</div>
+
+  // ✅ File 기준으로 통일 (string이면 업로드 안 된 상태로 처리하거나 상위에서 File로 변환 권장)
+  const file = imageUrl instanceof File ? imageUrl : null
 
   return (
-    <div className="relative flex justify-center items-center h-full w-full bg-gradient-to-br from-slate-50 to-blue-50 text-7xl">
+    <div className="relative flex justify-center items-center h-full w-full bg-gradient-to-br from-slate-50 to-blue-50 text-base">
+      {/* ✅ PlaneSelector 실제 동작하게 */}
       <div className="absolute top-4 left-4 z-10 w-72">
-        <PlaneSelector file={imageUrl instanceof File ? imageUrl : null} currentPlane={"axial"} onPlaneChange={function (plane: "axial" | "coronal" | "sagittal"): void {
-          throw new Error("Function not implemented.")
-        } } />
+        <PlaneSelector
+          file={file}
+          currentPlane={plane === "render" ? "axial" : (plane as any)} // PlaneSelector는 render 없음
+          onPlaneChange={(p) => setPlane(p)}
+        />
       </div>
 
-      <BrainSliceViewer imageUrl={imageUrl} drawingUrl="/images/tumor_resized.nii.gz" viewType="render" />
+      {/* ✅ BrainSliceViewer는 선택된 plane을 보여주게 */}
+      {file && (
+        <BrainSliceViewer
+          imageUrl={file}
+          drawingUrl="/images/tumor_resized.nii.gz"
+          viewType={plane === "render" ? "render" : plane}
+        />
+      )}
 
       {analysisText && (
         <div className="absolute inset-0 z-30 pointer-events-none">
